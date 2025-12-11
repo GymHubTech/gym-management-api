@@ -12,8 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Add CORS to global middleware stack
-        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
+        // Add CORS to global middleware stack (must be first)
+        $middleware->prepend(\Illuminate\Http\Middleware\HandleCors::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
