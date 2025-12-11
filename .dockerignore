@@ -1,0 +1,40 @@
+# Test files
+tests/
+phpunit.xml
+.phpunit.result.cache
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation
+README.md
+*.md
+
+# Environment files (we use env vars from Cloud Run)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+storage/logs/*
+
+# Cache
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+# Node modules (if any)
+node_modules/
+
+# Build artifacts
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+
