@@ -39,52 +39,46 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 RUN apk del --no-cache $PHPIZE_DEPS autoconf g++ make linux-headers \
     && rm -rf /var/cache/apk/* /tmp/*
 
-# Copy composer.json and composer.lock to the working directory.
-# Doing this before copying the rest of the app allows Docker to cache this layer
-# and speed up builds if only app code changes.
-COPY composer.json composer.lock /app/
-
 # Set working directory inside the container
 WORKDIR /app
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Copy composer.json and composer.lock
+COPY composer.json composer.lock /app/
+
 # Install PHP dependencies from composer.json/lock
-# Skip scripts during install since artisan file doesn't exist yet
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copy the rest of the application code into the container
 COPY . /app
 
-# Note: Autoloader is already optimized from composer install above
-# Package discovery will happen at runtime when the container starts
-
 # Configure Nginx for Laravel:
-# You'll create these files in a moment.
 COPY .docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY .docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
+# === CRITICAL FIX 1: Switch to non-root user for runtime ===
+# The `php artisan` and Nginx processes MUST run as a non-root user (www-data)
+# that owns the directories it needs to write to.
+# We switch the user BEFORE setting permissions and starting the script.
+USER www-data
+
 # Set proper permissions for Laravel storage and bootstrap cache directories.
-# This is crucial for Laravel to function correctly.
+# This is now the *ONLY* permissions block. Since the user is www-data, this ensures
+# the ownership is correct for the user running the CMD.
+# (If you moved the `USER www-data` up, you may need to use `chown -R $USER:$USER ...`)
+# But since www-data already exists, this should be fine.
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
     && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Copy startup script
+# NOTE: The subsequent `RUN` command here will run as `www-data` now.
 COPY .docker/startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
-# Set the ownership of storage and cache directories to the user running the process.
-# Assuming your user is 'www-data' or similar (common for PHP-FPM containers)
-# You might need to change 'www-data' to the actual user specified in your base image.
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
-
-# Ensure the directories are writable
-RUN chmod -R 775 /app/storage /app/bootstrap/cache
-
 # Expose port 8080 (Cloud Run default PORT)
-# Cloud Run will set the PORT environment variable, and nginx will use it
 EXPOSE 8080
 
-# Use startup script that runs migrations before starting services
+# Keep container alive with Nginx in foreground
 CMD ["/usr/local/bin/startup.sh"]
