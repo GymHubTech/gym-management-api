@@ -74,6 +74,14 @@ RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
 COPY .docker/startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
+# Set the ownership of storage and cache directories to the user running the process.
+# Assuming your user is 'www-data' or similar (common for PHP-FPM containers)
+# You might need to change 'www-data' to the actual user specified in your base image.
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
+
+# Ensure the directories are writable
+RUN chmod -R 775 /app/storage /app/bootstrap/cache
+
 # Expose port 8080 (Cloud Run default PORT)
 # Cloud Run will set the PORT environment variable, and nginx will use it
 EXPOSE 8080
