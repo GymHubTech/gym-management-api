@@ -58,24 +58,21 @@ COPY . /app
 COPY .docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY .docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# === CRITICAL FIX 1: Switch to non-root user for runtime ===
-# The `php artisan` and Nginx processes MUST run as a non-root user (www-data)
-# that owns the directories it needs to write to.
-# We switch the user BEFORE setting permissions and starting the script.
-USER www-data
-
-# Set proper permissions for Laravel storage and bootstrap cache directories.
-# This is now the *ONLY* permissions block. Since the user is www-data, this ensures
-# the ownership is correct for the user running the CMD.
-# (If you moved the `USER www-data` up, you may need to use `chown -R $USER:$USER ...`)
-# But since www-data already exists, this should be fine.
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+# === CRITICAL FIX: Set Permissions using numeric ID (UID 82 for www-data) ===
+# This ensures the command runs successfully during the build phase.
+# We run `chown` as root (default build user) but target UID 82 (www-data).
+# The user www-data belongs to the group www-data (GID 82)
+RUN chown -R 82:82 /app/storage /app/bootstrap/cache \
     && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Copy startup script
-# NOTE: The subsequent `RUN` command here will run as `www-data` now.
 COPY .docker/startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
+
+# === CRITICAL FIX: Switch user before CMD ===
+# This ensures the startup script and all running services run as the non-root user
+# that now owns the storage directory.
+USER www-data
 
 # Expose port 8080 (Cloud Run default PORT)
 EXPOSE 8080
