@@ -25,7 +25,7 @@ class CustomerRequest extends FormRequest
             'firstName' => ['required', 'string', 'max:255'],
             'lastName' => ['required', 'string', 'max:255'],
             'gender' => ['nullable', 'string', 'in:Male,Female,Other'],
-            'dateOfBirth' => ['nullable', 'date'],
+            'dateOfBirth' => ['required', 'date'],
             'photo' => ['nullable', 'string', 'max:500'],
             'phoneNumber' => ['required', 'string', 'max:20'],
             'email' => ['nullable', 'email', 'max:255'],
