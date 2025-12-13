@@ -12,9 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Add CORS to API middleware group (runs on all API routes)
         $middleware->api(prepend: [
             \Illuminate\Http\Middleware\HandleCors::class,
         ]);
+        // Also add to global stack as fallback
+        $middleware->prepend(\Illuminate\Http\Middleware\HandleCors::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
