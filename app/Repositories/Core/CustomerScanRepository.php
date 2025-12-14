@@ -7,18 +7,17 @@ use App\Models\Core\CustomerScans;
 
 class CustomerScanRepository
 {
-
     /**
      * @return LengthAwarePaginator
      */
     public function getAllScans(int $customerId): LengthAwarePaginator
     {
         return CustomerScans::where('customer_id', $customerId)
-        ->where('account_id', 1)
-        ->with(['customer', 'files'])
-        ->orderBy('scan_date', 'desc')
-        ->orderBy('id', 'desc')
-        ->paginate(50);
+            ->where('account_id', 1)
+            ->with(['files'])
+            ->orderBy('scan_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(50);
     }
 
     /**
@@ -66,5 +65,26 @@ class CustomerScanRepository
     public function deleteScan(int $id): bool
     {
         return CustomerScans::where('id', $id)->where('account_id', 1)->delete();
+    }
+
+    /**
+     * Get scans by customer ID and scan type
+     *
+     * @param int $customerId
+     * @param string $scanType
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getScansByType(int $customerId, string $scanType)
+    {
+        $query = CustomerScans::where('customer_id', $customerId)
+            ->where('account_id', 1)
+            ->where('scan_type', $scanType);
+
+        // Using QueryHelper for consistency, but getting all results
+        $query->with(['files']);
+        $query->orderBy('scan_date', 'desc');
+        $query->orderBy('id', 'desc');
+
+        return $query->get();
     }
 }

@@ -10,11 +10,11 @@ class CustomerProgressRepository
     public function getAllProgress(int $customerId): LengthAwarePaginator
     {
         return CustomerProgress::where('account_id', 1)
-        ->where('customer_id', $customerId)
-        ->with(['customer', 'files'])
-        ->orderBy('recorded_date', 'desc')
-        ->orderBy('id', 'desc')
-        ->paginate(50);
+            ->where('customer_id', $customerId)
+            ->with(['files', 'scan.files'])
+            ->orderBy('recorded_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(50);
     }
 
     /**
@@ -52,7 +52,7 @@ class CustomerProgressRepository
     {
         return CustomerProgress::where('id', $id)
             ->where('account_id', 1)
-            ->with(['files'])
+            ->with(['files', 'scan.files'])
             ->firstOrFail();
     }
 

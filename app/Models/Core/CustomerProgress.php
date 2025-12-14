@@ -34,7 +34,6 @@ class CustomerProgress extends Model
         'right_thigh',
         'left_calf',
         'right_calf',
-        // Body Composition
         'skeletal_muscle_mass',
         'body_fat_mass',
         'total_body_water',
@@ -42,8 +41,8 @@ class CustomerProgress extends Model
         'minerals',
         'visceral_fat_level',
         'basal_metabolic_rate',
-        // Data Source
         'data_source',
+        'customer_scan_id',
         // Notes
         'notes',
         'recorded_date',
@@ -104,4 +103,13 @@ class CustomerProgress extends Model
             ->where('account_id', 1)
             ->where('remarks', 'progress_tracking');
     }
+
+    /**
+     * Get the associated scan for this progress record.
+     */
+    public function scan(): BelongsTo
+    {
+        return $this->belongsTo(CustomerScans::class, 'customer_scan_id', 'id');
+    }
+
 }

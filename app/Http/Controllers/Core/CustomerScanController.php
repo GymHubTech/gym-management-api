@@ -28,6 +28,19 @@ class CustomerScanController
     }
 
     /**
+     * Get scans by customer ID and scan type
+     *
+     * @param int $customerId
+     * @param string $scanType
+     * @return JsonResponse
+     */
+    public function getScansByType($customerId, $scanType): JsonResponse
+    {
+        $scans = $this->customerScanRepository->getScansByType((int)$customerId, $scanType);
+        return ApiResponse::success(CustomerScanResource::collection($scans));
+    }
+
+    /**
      * @param $customerId
      * @param CustomerScanRequest $request
      *

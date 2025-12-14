@@ -54,6 +54,7 @@ class CustomerProgressRequest extends FormRequest
 
             // Notes
             'notes' => ['nullable', 'string'],
+            'customerScanId' => ['nullable', 'integer', 'exists:tb_customer_scans,id'],
         ];
     }
 }

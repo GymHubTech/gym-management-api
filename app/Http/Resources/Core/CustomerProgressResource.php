@@ -15,6 +15,7 @@ class CustomerProgressResource extends JsonResource
      */
     public function toArray($request): array
     {
+
         return [
             'id' => $this->id,
             'accountId' => $this->account_id,
@@ -47,9 +48,15 @@ class CustomerProgressResource extends JsonResource
             'visceralFatLevel' => $this->visceral_fat_level,
             'basalMetabolicRate' => $this->basal_metabolic_rate,
             'dataSource' => $this->data_source,
+            'customerScanId' => $this->customer_scan_id,
             'notes' => $this->notes,
             'recordedDate' => $this->recorded_date,
             'files' => CustomerFileResource::collection($this->resource->getRelation('files')),
+            'scan' => $this->when(
+                $this->resource->relationLoaded('scan') && ($scan = $this->resource->getRelation('scan'))?->relationLoaded('files'),
+                fn() => CustomerFileResource::collection($scan->getRelation('files')),
+                []
+            ),
             'customer' => $this->whenLoaded('customer', function () {
                 return new CustomerResource($this->customer);
             }),

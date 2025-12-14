@@ -52,6 +52,7 @@ Route::prefix('customers')->group(function () {
     // Customer Scan Routes
     Route::prefix('scans')->group(function () {
         Route::get('/{customerId}', [CustomerScanController::class, 'getAllCustomerScans']);
+        Route::get('/{customerId}/type/{scanType}', [CustomerScanController::class, 'getScansByType']);
         Route::post('/{customerId}', [CustomerScanController::class, 'createScan']);
         Route::put('/{id}', [CustomerScanController::class, 'updateCustomerScan']);
         Route::delete('/{id}', [CustomerScanController::class, 'deleteCustomerScan']);
