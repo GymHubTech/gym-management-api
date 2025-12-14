@@ -90,7 +90,8 @@ class CustomerProgress extends Model
      */
     public function files(): MorphMany
     {
-        return $this->morphMany(CustomerFiles::class, 'fileable');
+        return $this->morphMany(CustomerFiles::class, 'fileable')
+            ->where('account_id', 1); // Filter by account_id since all records use account_id = 1
     }
 
     /**
@@ -100,6 +101,7 @@ class CustomerProgress extends Model
     public function images(): MorphMany
     {
         return $this->morphMany(CustomerFiles::class, 'fileable')
+            ->where('account_id', 1)
             ->where('remarks', 'progress_tracking');
     }
 }

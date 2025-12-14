@@ -4,6 +4,7 @@ namespace App\Http\Resources\Core;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Core\CustomerFileResource;
 
 class CustomerProgressResource extends JsonResource
 {
@@ -48,21 +49,7 @@ class CustomerProgressResource extends JsonResource
             'dataSource' => $this->data_source,
             'notes' => $this->notes,
             'recordedDate' => $this->recorded_date,
-            'files' => $this->whenLoaded('files', function () {
-                return $this->files->map(function ($file) {
-                    return [
-                        'id' => $file->id,
-                        'fileName' => $file->file_name,
-                        'fileUrl' => $file->file_url,
-                        'thumbnailUrl' => $file->thumbnail_url,
-                        'fileSize' => $file->file_size,
-                        'mimeType' => $file->mime_type,
-                        'fileDate' => $file->file_date,
-                        'uploadedBy' => $file->uploaded_by,
-                        'remarks' => $file->remarks,
-                    ];
-                });
-            }),
+            'files' => CustomerFileResource::collection($this->resource->getRelation('files')),
             'customer' => $this->whenLoaded('customer', function () {
                 return new CustomerResource($this->customer);
             }),

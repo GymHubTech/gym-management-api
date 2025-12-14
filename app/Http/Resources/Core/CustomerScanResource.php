@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Core;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Core\CustomerFileResource;
 
 class CustomerScanResource extends JsonResource
 {
@@ -22,21 +23,7 @@ class CustomerScanResource extends JsonResource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'deletedAt' => $this->deleted_at,
-            'files' => $this->whenLoaded('files', function () {
-                return $this->files->map(function ($file) {
-                    return [
-                        'id' => $file->id,
-                        'fileName' => $file->file_name,
-                        'fileUrl' => $file->file_url,
-                        'thumbnailUrl' => $file->thumbnail_url,
-                        'fileSize' => $file->file_size,
-                        'mimeType' => $file->mime_type,
-                        'fileDate' => $file->file_date,
-                        'uploadedBy' => $file->uploaded_by,
-                        'remarks' => $file->remarks,
-                    ];
-                });
-            }),
+            'files' => CustomerFileResource::collection($this->resource->getRelation('files')),
         ];
     }
 }

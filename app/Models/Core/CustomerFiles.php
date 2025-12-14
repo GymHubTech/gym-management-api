@@ -23,7 +23,6 @@ class CustomerFiles extends Model
         'remarks',
         'file_name',
         'file_url',
-        'thumbnail_url',
         'file_size',
         'mime_type',
         'file_date',
@@ -34,6 +33,7 @@ class CustomerFiles extends Model
     {
         return [
             'file_date' => 'date',
+            'file_size' => 'decimal:2',
         ];
     }
 

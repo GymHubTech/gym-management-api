@@ -6,12 +6,14 @@ use App\Helpers\ApiResponse;
 use App\Http\Requests\Core\CustomerProgressRequest;
 use App\Http\Resources\Core\CustomerProgressResource;
 use App\Repositories\Core\CustomerProgressRepository;
+use App\Services\Core\CustomerProgressService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CustomerProgressController
 {
     public function __construct(
         private CustomerProgressRepository $customerProgressRepository,
+        private CustomerProgressService $customerProgressService,
     )
     {}
 
@@ -74,8 +76,14 @@ class CustomerProgressController
      */
     public function deleteProgress($id): JsonResponse
     {
-        $this->customerProgressRepository->deleteProgress((int)$id);
+        try {
+            $fileUrls = $this->customerProgressService->deleteProgress((int)$id);
 
-        return ApiResponse::success(null, 'Progress record deleted successfully');
+            return ApiResponse::success([
+                'fileUrls' => $fileUrls, // Return file URLs for frontend to delete from Firebase
+            ], 'Progress record deleted successfully');
+        } catch (\Throwable $th) {
+            return ApiResponse::error('Failed to delete progress: ' . $th->getMessage(), 500);
+        }
     }
 }

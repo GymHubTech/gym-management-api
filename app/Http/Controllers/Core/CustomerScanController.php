@@ -6,12 +6,15 @@ use App\Helpers\ApiResponse;
 use App\Http\Requests\Core\CustomerScanRequest;
 use App\Http\Resources\Core\CustomerScanResource;
 use App\Repositories\Core\CustomerScanRepository;
+use App\Services\Core\CustomerScanService;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CustomerScanController
 {
     public function __construct(
         private CustomerScanRepository $customerScanRepository,
+        private CustomerScanService $customerScanService,
     )
     {}
 
@@ -58,7 +61,14 @@ class CustomerScanController
      */
     public function deleteCustomerScan($id): JsonResponse
     {
-        $this->customerScanRepository->deleteScan((int)$id);
-        return ApiResponse::success(null, 'Scan deleted successfully');
+        try {
+            $fileUrls = $this->customerScanService->deleteScan((int)$id);
+
+            return ApiResponse::success([
+                'fileUrls' => $fileUrls, // Return file URLs for frontend to delete from Firebase
+            ], 'Scan deleted successfully');
+        } catch (\Throwable $th) {
+            return ApiResponse::error('Failed to delete scan: ' . $th->getMessage(), 500);
+        }
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Account\MembershipPlanController;
 use App\Http\Controllers\Core\CustomerController;
 use App\Http\Controllers\Core\CustomerProgressController;
 use App\Http\Controllers\Core\CustomerScanController;
+use App\Http\Controllers\Core\CustomerFileController;
 use App\Http\Controllers\Core\ExpenseController;
 use App\Http\Controllers\Core\ExpenseCategoryController;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,9 @@ Route::prefix('customers')->group(function () {
         Route::post('/{customerId}', [CustomerProgressController::class, 'createProgress']);
         Route::put('/{id}', [CustomerProgressController::class, 'updateProgress']);
         Route::delete('/{id}', [CustomerProgressController::class, 'deleteProgress']);
+
+        // Progress File Routes - fileableType is automatically set to CustomerProgress
+        Route::post('/{progressId}/files', [CustomerFileController::class, 'createProgressFile']);
     });
 
     // Customer Scan Routes
@@ -51,5 +55,14 @@ Route::prefix('customers')->group(function () {
         Route::post('/{customerId}', [CustomerScanController::class, 'createScan']);
         Route::put('/{id}', [CustomerScanController::class, 'updateCustomerScan']);
         Route::delete('/{id}', [CustomerScanController::class, 'deleteCustomerScan']);
+
+        // Scan File Routes - fileableType is automatically set to CustomerScans
+        Route::post('/{scanId}/files', [CustomerFileController::class, 'createScanFile']);
+    });
+
+    // Customer File Routes (general)
+    Route::prefix('files')->group(function () {
+        Route::get('/{customerId}', [CustomerFileController::class, 'getFilesByCustomerId']);
+        Route::delete('/{id}', [CustomerFileController::class, 'deleteFile']);
     });
 });

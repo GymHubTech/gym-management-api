@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string('remarks');
             // File Details
             $table->string('file_name', 255);
-            $table->string('file_url', 500); // Firebase Storage URL
+            $table->string('file_url', 500); // Firebase Storage URL (stores path: {accountId}/{customerId}/filename)
             $table->string('thumbnail_url', 500)->nullable(); // Thumbnail for faster loading (mainly for photos)
-            $table->string('file_size', 50)->nullable(); // e.g., "2.4 MB"
+            $table->decimal('file_size', 10, 2)->nullable(); // File size in KB (numeric for storage calculations)
             $table->string('mime_type', 100)->nullable();
             $table->date('file_date'); // Date the file was taken/created
             $table->unsignedBigInteger('uploaded_by')->nullable(); // Skip foreign constraint for now
