@@ -7,6 +7,8 @@ use App\Http\Controllers\Core\CustomerScanController;
 use App\Http\Controllers\Core\CustomerFileController;
 use App\Http\Controllers\Core\CustomerBillController;
 use App\Http\Controllers\Core\CustomerPaymentController;
+use App\Http\Controllers\Core\CustomerAppointmentController;
+use App\Http\Controllers\Account\AppointmentTypeController;
 use App\Http\Controllers\Core\ExpenseController;
 use App\Http\Controllers\Core\ExpenseCategoryController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +32,10 @@ Route::prefix('expense-categories')->group(function () {
     Route::post('/', [ExpenseCategoryController::class, 'store']);
     Route::put('/{id}', [ExpenseCategoryController::class, 'updateExpenseCategory']);
     Route::delete('/{id}', [ExpenseCategoryController::class, 'delete']);
+});
+
+Route::prefix('appointment-types')->group(function () {
+    Route::get('/', [AppointmentTypeController::class, 'getAllAppointmentTypes']);
 });
 
 Route::prefix('customers')->group(function () {
@@ -81,6 +87,14 @@ Route::prefix('customers')->group(function () {
         Route::get('/{billId}/payments', [CustomerPaymentController::class, 'getBillPayments']);
         Route::post('/{billId}/payments', [CustomerPaymentController::class, 'addPayment']);
         Route::delete('/payments/{id}', [CustomerPaymentController::class, 'deletePayment']);
+    });
+
+    // Customer Appointment Routes
+    Route::prefix('appointments')->group(function () {
+        Route::get('/{customerId}', [CustomerAppointmentController::class, 'getAllCustomerAppointments']);
+        Route::post('/{customerId}', [CustomerAppointmentController::class, 'createCustomerAppointment']);
+        Route::put('/{id}', [CustomerAppointmentController::class, 'updateCustomerAppointment']);
+        Route::delete('/{id}', [CustomerAppointmentController::class, 'deleteCustomerAppointment']);
     });
 
 });
