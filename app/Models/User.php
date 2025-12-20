@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Core\Customer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,9 +20,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'firstname',
+        'lastname',
         'email',
         'password',
+        'firebase_uid',
+        'role',
+        'phone',
     ];
 
     /**
@@ -47,11 +53,21 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user's full name.
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return trim("{$this->firstname} {$this->lastname}");
+    }
+
+    /**
      * Get the customers assigned to this trainer.
      */
     public function customers()
     {
-        return $this->belongsToMany(\App\Models\Core\Customer::class, 'tb_customer_trainor', 'trainer_id', 'customer_id')
+        return $this->belongsToMany(Customer::class, 'tb_customer_trainor', 'trainer_id', 'customer_id')
             ->withTimestamps();
     }
 }
