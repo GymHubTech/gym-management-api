@@ -19,7 +19,8 @@ class CustomerService
     public function __construct(
         private CustomerRepository $repository,
         private MembershipPlanRepository $membershipPlanRepository,
-        private CustomerBillRepository $customerBillRepository
+        private CustomerBillRepository $customerBillRepository,
+        private NotificationService $notificationService
     ) {
     }
 
@@ -66,6 +67,9 @@ class CustomerService
                 if ($currentTrainerId) {
                     $customer->trainers()->sync([$currentTrainerId]);
                 }
+
+                // Send customer registration notification
+                $this->notificationService->createCustomerRegisteredNotification($customer);
 
                 return $customer->fresh(['currentTrainer']);
             });

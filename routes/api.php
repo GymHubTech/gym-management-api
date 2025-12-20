@@ -9,6 +9,7 @@ use App\Http\Controllers\Core\CustomerBillController;
 use App\Http\Controllers\Core\CustomerPaymentController;
 use App\Http\Controllers\Core\ExpenseController;
 use App\Http\Controllers\Core\ExpenseCategoryController;
+use App\Http\Controllers\Core\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('membership-plans')->group(function () {
@@ -84,3 +85,11 @@ Route::prefix('customers')->group(function () {
     });
 
 });
+
+Route::prefix('notifications')->group(function () {
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::get('/unread-count', [NotificationController::class, 'getUnreadCount']);
+    Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
+});
+
