@@ -108,4 +108,17 @@ class UsersController
         $user = $this->usersService->resetPassword($id, $genericData);
         return ApiResponse::success(new UserResource($user), 'Password reset successfully');
     }
+
+    /**
+     * Get all coaches (users with role 'coach' and status 'active')
+     *
+     * @param GenericRequest $request
+     * @return JsonResponse
+     */
+    public function getCoaches(GenericRequest $request): JsonResponse
+    {
+        $data = $request->getGenericData();
+        $coaches = $this->usersRepository->getAllCoaches($data);
+        return ApiResponse::success(UserResource::collection($coaches)->response()->getData(true)['data'] ?? []);
+    }
 }

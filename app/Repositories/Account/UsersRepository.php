@@ -28,6 +28,20 @@ class UsersRepository
     }
 
     /**
+     * Get all coaches (users with role 'coach' and status 'active')
+     *
+     * @param GenericData $genericData
+     * @return Collection
+     */
+    public function getAllCoaches(GenericData $genericData):Collection
+    {
+        $query = User::where('account_id', $genericData->userData->account_id)
+            ->where('role', UserStatusConstant::COACH)
+            ->where('status', UserStatusConstant::ACTIVE);
+        return $query->get();
+    }
+
+    /**
      * Check if user exists by Firebase UID (including soft-deleted)
      *
      * @param string $firebaseUid
