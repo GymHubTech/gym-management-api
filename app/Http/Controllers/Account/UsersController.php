@@ -84,6 +84,19 @@ class UsersController
     }
 
     /**
+     * @param GenericRequest $request
+     * @param int $id
+     *
+     * @return JsonResponse
+     */
+    public function activateUser(GenericRequest $request, int $id): JsonResponse
+    {
+        $data = $request->getGenericData();
+        $this->usersRepository->activateUser($id, $data->userData->account_id);
+        return ApiResponse::success(null, 'User activated successfully');
+    }
+
+    /**
      * @param ResetPasswordRequest $request
      * @param int $id
      *

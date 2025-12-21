@@ -96,6 +96,19 @@ class UsersRepository
     }
 
     /**
+     * @param int $id
+     * @param int $accountId
+     *
+     * @return bool
+     */
+    public function activateUser(int $id, int $accountId): bool
+    {
+        return User::where('id', $id)
+        ->where('account_id', $accountId)
+        ->update(['status' => UserStatusConstant::ACTIVE]);
+    }
+
+    /**
      * Delete a user (soft delete)
      * Note: Once deleted, users cannot be restored
      *
