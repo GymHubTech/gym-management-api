@@ -8,5 +8,8 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Schedule membership expiration check to run daily at 9:00 AM
-Schedule::command('membership:check-expiration')->dailyAt('09:00');
+// Schedule membership expiration notifications - Run daily at 9:00 AM
+Schedule::command('membership:check-expiration')
+    ->dailyAt('09:00')
+    ->timezone('Asia/Manila');
+
