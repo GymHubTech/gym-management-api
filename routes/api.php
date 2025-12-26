@@ -63,8 +63,8 @@ Route::middleware([FirebaseAuthMiddleware::class])->group(function () {
 
         // Customer Progress Routes
         Route::prefix('progress')->group(function () {
-            Route::get('/{customerId}', [CustomerProgressController::class, 'getAllCustomerProgress']);
-            Route::post('/{customerId}', [CustomerProgressController::class, 'createProgress']);
+            Route::get('/', [CustomerProgressController::class, 'getAllCustomerProgress']);
+            Route::post('/', [CustomerProgressController::class, 'createProgress']);
             Route::put('/{id}', [CustomerProgressController::class, 'updateProgress']);
             Route::delete('/{id}', [CustomerProgressController::class, 'deleteProgress']);
 
@@ -74,9 +74,9 @@ Route::middleware([FirebaseAuthMiddleware::class])->group(function () {
 
         // Customer Scan Routes
         Route::prefix('scans')->group(function () {
-            Route::get('/{customerId}', [CustomerScanController::class, 'getAllCustomerScans']);
-            Route::get('/{customerId}/type/{scanType}', [CustomerScanController::class, 'getScansByType']);
-            Route::post('/{customerId}', [CustomerScanController::class, 'createScan']);
+            Route::get('/', [CustomerScanController::class, 'getAllCustomerScans']);
+            Route::get('/type/{scanType}', [CustomerScanController::class, 'getScansByType']);
+            Route::post('/', [CustomerScanController::class, 'createScan']);
             Route::put('/{id}', [CustomerScanController::class, 'updateCustomerScan']);
             Route::delete('/{id}', [CustomerScanController::class, 'deleteCustomerScan']);
 
@@ -86,13 +86,13 @@ Route::middleware([FirebaseAuthMiddleware::class])->group(function () {
 
         // Customer File Routes (general)
         Route::prefix('files')->group(function () {
-            Route::get('/{customerId}', [CustomerFileController::class, 'getFilesByCustomerId']);
+            Route::get('/', [CustomerFileController::class, 'getFilesByCustomerId']);
             Route::delete('/{id}', [CustomerFileController::class, 'deleteFile']);
         });
 
         // Customer Bill Routes
         Route::prefix('bills')->group(function () {
-            Route::get('/customer/{customerId}', [CustomerBillController::class, 'getCustomerBills']);
+            Route::get('/', [CustomerBillController::class, 'getCustomerBills']);
             Route::post('/', [CustomerBillController::class, 'createBill']);
             Route::put('/{id}', [CustomerBillController::class, 'updateBill']);
             Route::delete('/{id}', [CustomerBillController::class, 'delete']);

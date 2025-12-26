@@ -30,6 +30,7 @@ class GenericRequest extends FormRequest
             'filters' => ['nullable', 'array'],
             'relations' => ['nullable', 'array'],
             'sorts' => ['nullable', 'array'],
+            'customerId' => ['nullable', 'integer'],
         ];
     }
 
@@ -130,6 +131,7 @@ class GenericRequest extends FormRequest
         $params->filters = $this->input('filters', []);
         $params->relations = $this->input('relations', []);
         $params->sorts = $this->input('sorts', []);
+        $params->customerId = $this->input('customerId') ? (int)$this->input('customerId') : null;
 
         // Also handle single 'sort' parameter for backward compatibility
         if ($this->getSort() && empty($params->sorts)) {

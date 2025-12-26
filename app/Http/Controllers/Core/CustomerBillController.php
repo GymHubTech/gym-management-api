@@ -23,13 +23,12 @@ class CustomerBillController extends Controller
      * Get all bills for a specific customer with pagination, filtering, and sorting
      *
      * @param GenericRequest $request
-     * @param int $customerId
      * @return JsonResponse
      */
-    public function getCustomerBills(GenericRequest $request, int $customerId): JsonResponse
+    public function getCustomerBills(GenericRequest $request): JsonResponse
     {
         $data = $request->getGenericData();
-        $bills = $this->repository->getByCustomerId($customerId, $data);
+        $bills = $this->repository->getByCustomerId($data);
         return ApiResponse::success($bills);
     }
 

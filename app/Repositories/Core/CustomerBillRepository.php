@@ -100,9 +100,9 @@ class CustomerBillRepository
      * @param GenericData $genericData
      * @return LengthAwarePaginator
      */
-    public function getByCustomerId(int $customerId, GenericData $genericData): LengthAwarePaginator
+    public function getByCustomerId(GenericData $genericData): LengthAwarePaginator
     {
-        $query = CustomerBill::where('customer_id', $customerId)
+        $query = CustomerBill::where('customer_id', $genericData->customerId)
             ->where('account_id', $genericData->userData->account_id);
 
         // Apply relations, filters, and sorts using GenericData methods
