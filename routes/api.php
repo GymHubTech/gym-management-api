@@ -11,6 +11,7 @@ use App\Http\Controllers\Core\CustomerBillController;
 use App\Http\Controllers\Core\CustomerPaymentController;
 use App\Http\Controllers\Core\ExpenseController;
 use App\Http\Controllers\Core\ExpenseCategoryController;
+use App\Http\Controllers\Core\NotificationController;
 use App\Http\Middleware\FirebaseAuthMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -105,3 +106,16 @@ Route::middleware([FirebaseAuthMiddleware::class])->group(function () {
 
     });
 });
+
+Route::prefix('notifications')->group(function () {
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::get('/unread-count', [NotificationController::class, 'getUnreadCount']);
+    Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
+});
+
+Route::prefix('notification-preferences')->group(function () {
+    Route::get('/', [\App\Http\Controllers\NotificationPreferenceController::class, 'index']);
+    Route::post('/', [\App\Http\Controllers\NotificationPreferenceController::class, 'update']);
+});
+

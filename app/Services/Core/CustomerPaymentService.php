@@ -18,6 +18,7 @@ class CustomerPaymentService
         private CustomerPaymentRepository $paymentRepository,
         private CustomerBillRepository $billRepository,
         private CustomerRepository $customerRepository,
+        private NotificationService $notificationService,
     ) {
     }
 
@@ -72,6 +73,9 @@ class CustomerPaymentService
                 // Recalculate customer balance using existing model method
                 $customer = $this->customerRepository->findCustomerById($customerId, $accountId);
                 $customer->recalculateBalance();
+
+                // Send payment notification
+                $this->notificationService->createPaymentReceivedNotification($payment);
 
                 return $payment->fresh(['customer', 'bill', 'creator', 'updater']);
             });

@@ -20,5 +20,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UsersTableSeeder::class,
         ]);
+
+        // Seed notifications
+        $this->call([
+            NotificationSeeder::class,
+        ]);
     }
 }
