@@ -55,7 +55,7 @@ steps:
       - '--command'
       - 'sh'
       - '--args'
-      - '-c,cd /app && php artisan queue:work --sleep=3 --tries=3 --max-time=3600'
+      - '-c,cd /app && php artisan queue:work --sleep=3 --tries=3 --max-time=3600 & php -S 0.0.0.0:8080 -t public'
 
 images:
   - 'gcr.io/$PROJECT_ID/gym-management-api-queue:$SHORT_SHA'
